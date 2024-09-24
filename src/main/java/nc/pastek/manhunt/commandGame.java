@@ -37,6 +37,10 @@ public class commandGame implements CommandExecutor {
 
 
             if(args[0].equalsIgnoreCase("speedrunner")){
+                if (game.inGame){
+                    player.sendMessage("Vous ne pouvez pas rejoindre d'équipe si la game a commencé.");
+                    return false;
+                }
                 if(game.pl_in_hunters(player)){
                     game.hunters.remove(player);
                 }if(!game.pl_in_speedrunners(player)){
@@ -46,6 +50,12 @@ public class commandGame implements CommandExecutor {
             }
 
             if(args[0].equalsIgnoreCase("hunter")){
+
+                if (game.inGame){
+                    player.sendMessage("Vous ne pouvez pas rejoindre d'équipe si la game a commencé.");
+                    return false;
+                }
+
                 if(game.pl_in_speedrunners(player)){
                     game.speedrunners.remove(player);
                 }if(!game.pl_in_hunters(player)){
@@ -73,6 +83,11 @@ public class commandGame implements CommandExecutor {
         if (args.length == 2){
 
             if (args[0].equalsIgnoreCase("start")){
+
+                if (game.inGame){
+                    player.sendMessage("Vous ne pouvez pas start une game si la game a commencé.");
+                    return false;
+                }
 
                 if (!game.speedrunners.contains(player)){ // on vérifie que c'est un runner qui execute la commande
                     player.sendMessage("Seul un speedrunner peut executer la commande start");
@@ -104,6 +119,7 @@ public class commandGame implements CommandExecutor {
                 int sec = compteur[0] % 60;
                 game.broadcast("Démarrage du chrono, lancement dans "+min+":"+sec);
                 game.effects_on_hunters(compteur[0]);
+                game.inGame = true; // on entre dans une game.
 
 
 
