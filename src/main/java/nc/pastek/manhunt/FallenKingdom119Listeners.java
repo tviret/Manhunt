@@ -2,6 +2,8 @@ package nc.pastek.manhunt;
 
 import org.bukkit.Bukkit;
 import java.lang.Object;
+
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.Material;
@@ -12,6 +14,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerDropItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
@@ -97,6 +100,28 @@ public class FallenKingdom119Listeners implements Listener {
     }
 
 
+    @EventHandler
+    public void onDeath(PlayerDeathEvent event){
+        Player player = event.getEntity();
+        if(commandGame.game.inGame){
+            if(commandGame.game.speedrunners.contains(player)){
+                player.setGameMode(GameMode.SPECTATOR);
+                commandGame.game.speedrunners.remove(player);
+                commandGame.game.broadcast("Le speedrunner " + "§c" + player.getDisplayName()+"est §cMort");
+                if (commandGame.game.speedrunners.isEmpty()){
+                    // les hunter ont gagné
+                    for(Player pl : commandGame.game.hunters){
+                        pl.setGameMode(GameMode.SPECTATOR);
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "title "+pl.getDisplayName()+" times 20 100 20");
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "title "+pl.getDisplayName()+" subtitle {\"text\":\"Tous les speedrunners sont tombés\"}");
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "title "+pl.getDisplayName()+" title [\"\",{\"text\":\"Les \"},{\"text\":\"Hunters\",\"color\":\"dark_red\"},{\"text\":\" ont \"},{\"text\":\"gagné !\",\"color\":\"dark_red\"}]");
+                    }
+
+                    commandGame.game.inGame = false;
+                }
+            }
+        }
+    }
 
 
 
