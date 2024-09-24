@@ -1,0 +1,16 @@
+name: manhunt
+version: '${version}'
+main: nc.pastek.manhunt.Main
+api-version: '1.21'
+
+commands:
+  test:
+    description: test
+  broadcast:
+    description: test affichage
+  team:
+    description: creation + gestion des equipes
+  base:
+    description: tres important gestion et creation des bases
+  game:
+    description: creation gestion de la game
