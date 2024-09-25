@@ -9,16 +9,17 @@ import java.lang.Math;
 
 import java.util.ArrayList;
 import java.util.Locale;
+import java.util.Objects;
 
 public class Game  extends Object{
-    ArrayList <Player> speedrunners = new ArrayList<Player>();
-    ArrayList <Player> hunters = new ArrayList<Player>();
+    ArrayList <String> speedrunners = new ArrayList<String>();
+    ArrayList <String> hunters = new ArrayList<String>();
     Location teleport_block;
     boolean inGame = false;
 
     public boolean pl_in_hunters(Player player){
         for(int i = 0 ; i < hunters.size() ; i++){
-            if(hunters.get(i).equals(player)) {
+            if(Objects.equals(Bukkit.getPlayer(hunters.get(i)), player)) {
                 return true;
             }
         }
@@ -26,8 +27,8 @@ public class Game  extends Object{
     }
 
     public boolean pl_in_speedrunners(Player player){
-        for(int i = 0 ; i < speedrunners.size() ; i++){
-            if(speedrunners.get(i).equals(player)) {
+        for (String speedrunner : speedrunners) {
+            if (Objects.equals(Bukkit.getPlayer(speedrunner), player)) {
                 return true;
             }
         }
@@ -39,8 +40,8 @@ public class Game  extends Object{
         World targetWorld = target.getWorld();
         ArrayList<Player> pl = new ArrayList<Player>();
         for(int i = 0 ; i<speedrunners.size(); i++){
-            if (speedrunners.get(i).getLocation().getWorld() == targetWorld){
-                pl.add(speedrunners.get(i));
+            if (Objects.requireNonNull(Bukkit.getPlayer(speedrunners.get(i))).getLocation().getWorld() == targetWorld){
+                pl.add(Bukkit.getPlayer(speedrunners.get(i)));
             }
         }
 
@@ -78,18 +79,19 @@ public class Game  extends Object{
     }
 
     public void broadcast(String message){
-        hunters.forEach((pl) -> pl.sendMessage(message));
-        speedrunners.forEach((pl) -> pl.sendMessage(message));
+        hunters.forEach((pl) -> Objects.requireNonNull(Bukkit.getPlayer(pl)).sendMessage(message));
+        speedrunners.forEach((pl) -> Objects.requireNonNull(Bukkit.getPlayer(pl)).sendMessage(message));
     }
 
     public void effects_on_hunters(int duration){
 
-        for (Player pl : hunters) {
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "effect give " + pl.getName() + " slowness "+duration+" 255 false");
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "effect give " + pl.getName() + " jump_boost "+duration+" 255 false");
-            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "effect give " + pl.getName() + " blindness "+duration+" 255 false");
+        for (String pl_pseudo : hunters) {
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "effect give " + pl_pseudo + " slowness "+duration+" 255 false");
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "effect give " + pl_pseudo + " jump_boost "+duration+" 255 false");
+            Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "effect give " + pl_pseudo + " blindness "+duration+" 255 false");
         }
     }
+
 
 
 

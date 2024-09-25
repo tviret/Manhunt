@@ -15,6 +15,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.awt.*;
 import java.security.spec.ECField;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -42,9 +43,9 @@ public class commandGame implements CommandExecutor {
                     return false;
                 }
                 if(game.pl_in_hunters(player)){
-                    game.hunters.remove(player);
+                    game.hunters.remove(player.getName());
                 }if(!game.pl_in_speedrunners(player)){
-                    game.speedrunners.add(player);
+                    game.speedrunners.add(player.getName());
                     player.sendMessage("Vous rejoignez les speedrunners");
                 }else {player.sendMessage("Vous etes déjà speedrunner");}
             }
@@ -57,21 +58,21 @@ public class commandGame implements CommandExecutor {
                 }
 
                 if(game.pl_in_speedrunners(player)){
-                    game.speedrunners.remove(player);
+                    game.speedrunners.remove(player.getName());
                 }if(!game.pl_in_hunters(player)){
-                    game.hunters.add(player);
+                    game.hunters.add(player.getName());
                     player.sendMessage("Vous rejoignez les hunters");
                 }else{player.sendMessage("Vous etes déjà hunters");}
             }
             if(args[0].equalsIgnoreCase("list")){
                 player.sendMessage("Speedrunners : \n");
                 for (int i = 0 ; i < game.speedrunners.size() ; i ++){
-                    player.sendMessage(game.speedrunners.get(i).getName());
+                    player.sendMessage(game.speedrunners.get(i));
                 }
 
                 player.sendMessage("\nHunters: \n");
                 for (int i = 0 ; i < game.hunters.size() ; i ++){
-                    player.sendMessage(game.hunters.get(i).getName());
+                    player.sendMessage(game.hunters.get(i));
                 }
             }
 
@@ -89,7 +90,7 @@ public class commandGame implements CommandExecutor {
                     return false;
                 }
 
-                if (!game.speedrunners.contains(player)){ // on vérifie que c'est un runner qui execute la commande
+                if (!game.speedrunners.contains(player.getName())){ // on vérifie que c'est un runner qui execute la commande
                     player.sendMessage("Seul un speedrunner peut executer la commande start");
                     return  false;
                 }
@@ -108,8 +109,8 @@ public class commandGame implements CommandExecutor {
                 }
 
                 // tp de tout les hunter et runners
-                game.hunters.forEach((pl) -> pl.teleport(tp_all));
-                game.speedrunners.forEach((pl) -> pl.teleport(tp_all));
+                game.hunters.forEach((pl) -> Objects.requireNonNull(Bukkit.getPlayer(pl)).teleport(tp_all));
+                game.speedrunners.forEach((pl) -> Objects.requireNonNull(Bukkit.getPlayer(pl)).teleport(tp_all));
 
                 // début du timer (message au début, message toutes les 30aines de secondes messages toutes les secondes de 10 à 0)
 

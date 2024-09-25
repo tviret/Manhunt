@@ -16,7 +16,7 @@ public class Main extends JavaPlugin{
         getCommand("broadcast").setExecutor(new CommandTest());
         getCommand("team").setExecutor(new commandTeam());
         getCommand("game").setExecutor(new commandGame());
-        getServer().getPluginManager().registerEvents(new FallenKingdom119Listeners(), this);
+        getServer().getPluginManager().registerEvents(new manhuntListeners(), this);
 
 
     }

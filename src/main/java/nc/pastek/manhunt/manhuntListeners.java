@@ -28,9 +28,10 @@ import org.bukkit.inventory.meta.PotionMeta;
 import javax.swing.*;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.Objects;
 
 
-public class FallenKingdom119Listeners implements Listener {
+public class manhuntListeners implements Listener {
 
     @EventHandler
     public void onJoin(PlayerJoinEvent event) {
@@ -94,6 +95,9 @@ public class FallenKingdom119Listeners implements Listener {
             compassMeta.setLodestoneTracked(false);
 
             compass.setItemMeta(compassMeta);
+            System.out.println("la bousolle pointe vers : "+target.getBlockX()+" "+target.getBlockY()+" "+target.getBlockZ());
+            System.out.println("position de "+target_pl.getDisplayName()+" : "+target_pl.getLocation().getBlockX() + " " + +target_pl.getLocation().getBlockY() + " " + target_pl.getLocation().getBlockZ());
+            System.out.println(((CompassMeta) compass.getItemMeta()).getLodestone());
             player.sendMessage("La boussole pointe vers "+target_pl.getName());
         }
     }
@@ -104,17 +108,17 @@ public class FallenKingdom119Listeners implements Listener {
     public void onDeath(PlayerDeathEvent event){
         Player player = event.getEntity();
         if(commandGame.game.inGame){
-            if(commandGame.game.speedrunners.contains(player)){
+            if(commandGame.game.speedrunners.contains(player.getName())){
                 player.setGameMode(GameMode.SPECTATOR);
-                commandGame.game.speedrunners.remove(player);
+                commandGame.game.speedrunners.remove(player.getName());
                 commandGame.game.broadcast("Le speedrunner " + "§c" + player.getDisplayName()+"est §cMort");
                 if (commandGame.game.speedrunners.isEmpty()){
                     // les hunter ont gagné
-                    for(Player pl : commandGame.game.hunters){
-                        pl.setGameMode(GameMode.SPECTATOR);
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "title "+pl.getDisplayName()+" times 20 100 20");
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "title "+pl.getDisplayName()+" subtitle {\"text\":\"Tous les speedrunners sont tombés\"}");
-                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "title "+pl.getDisplayName()+" title [\"\",{\"text\":\"Les \"},{\"text\":\"Hunters\",\"color\":\"dark_red\"},{\"text\":\" ont \"},{\"text\":\"gagné !\",\"color\":\"dark_red\"}]");
+                    for(String pl_pseudo : commandGame.game.hunters){
+                        Objects.requireNonNull(Bukkit.getPlayer(pl_pseudo)).setGameMode(GameMode.SPECTATOR);
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "title "+pl_pseudo+" times 20 100 20");
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "title "+pl_pseudo+" subtitle {\"text\":\"Tous les speedrunners sont tombés\"}");
+                        Bukkit.dispatchCommand(Bukkit.getConsoleSender(), "title "+pl_pseudo+" title [\"\",{\"text\":\"Les \"},{\"text\":\"Hunters\",\"color\":\"dark_red\"},{\"text\":\" ont \"},{\"text\":\"gagné !\",\"color\":\"dark_red\"}]");
                     }
 
                     commandGame.game.inGame = false;
